@@ -3,18 +3,9 @@ CREATE TABLE `data`.`oddsDelta` (
     `bookmaker` varchar(10) NOT NULL,
     `bid` varchar(50) NOT NULL,
     `oddsTime` datetime NOT NULL,
-    `oddsHadHome` float(5,3) DEFAULT NULL,
-    `oddsHadDraw` float(5,3) DEFAULT NULL,
-    `oddsHadAway` float(5,3) DEFAULT NULL,
     `oddsHandicapLine` float(5,3) DEFAULT NULL,
     `oddsHandicapHome` float(5,3) DEFAULT NULL,
     `oddsHandicapAway` float(5,3) DEFAULT NULL,
-    `oddsHiLoLine` float(5,3) DEFAULT NULL,
-    `oddsHiLoHigh` float(5,3) DEFAULT NULL,
-    `oddsHiLoLow` float(5,3) DEFAULT NULL,
-    `oddsCornerHiLoLine` float(5,3) DEFAULT NULL,
-    `oddsCornerHiLoHigh` float(5,3) DEFAULT NULL,
-    `oddsCornerHiLoLow` float(5,3) DEFAULT NULL,
     PRIMARY KEY (`id`, `bookmaker`, `oddsTime`),
     FOREIGN KEY (`id`) REFERENCES `data`.`match`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

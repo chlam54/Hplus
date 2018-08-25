@@ -16,15 +16,11 @@ public class OddsDeltaDaoImpl extends MatchDaoImpl implements OddsDeltaDao {
 	@Override
 	public void save(OddsDelta od) {
 		String sql = "INSERT INTO "+table+" (id, bookmaker, bid, oddsTime, "
-				+ "oddsHadHome, oddsHadDraw, oddsHadAway, "
-				+ "oddsHandicapLine, oddsHandicapHome, oddsHandicapAway, "
-				+ "oddsHiLoLine, oddsHiLoHigh, oddsHiLoLow ) VALUES ("
-				+ "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				+ "oddsHandicapLine, oddsHandicapHome, oddsHandicapAway) VALUES ("
+				+ "?, ?, ?, ?, ?, ?, ?)";
 		this.jdbcTemplate.update(sql, new Object[] {
 				od.getId(), od.getBookmaker(), od.getBid(), od.getOddsTime(),
-				od.getOddsHadHome(), od.getOddsHadDraw(), od.getOddsHadAway(),
-				od.getOddsHandicapLine(), od.getOddsHandicapHome(), od.getOddsHandicapAway(),
-				od.getOddsHiLoLine(), od.getOddsHiLoHigh(), od.getOddsHiLoLow()});
+				od.getOddsHandicapLine(), od.getOddsHandicapHome(), od.getOddsHandicapAway()});
 	}
 	
 	private List<OddsDelta> list(String sql, Object[] args){

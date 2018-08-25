@@ -16,15 +16,9 @@ public class OddsDeltaRowMapper implements RowMapper {
 		od.setId(rs.getString("id"));
 		od.setBookmaker(rs.getString("bookmaker"));
 		od.setBid(rs.getString("bid"));
-		od.setOddsHadAway(rs.getFloat("oddsHadAway"));
-		od.setOddsHadDraw(rs.getFloat("oddsHadDraw"));
-		od.setOddsHadHome(rs.getFloat("oddsHadHome"));
 		od.setOddsHandicapAway(rs.getFloat("oddsHandicapAway"));
 		od.setOddsHandicapHome(rs.getFloat("oddsHandicapHome"));
 		od.setOddsHandicapLine(rs.getFloat("oddsHandicapLine"));
-		od.setOddsHiLoHigh(rs.getFloat("oddsHiLoHigh"));
-		od.setOddsHiLoLine(rs.getFloat("oddsHiLoLine"));
-		od.setOddsHiLoLow(rs.getFloat("oddsHiLoLow"));
 		od.setOddsTime(rs.getDate("oddsTime"));
 		
 		return od;

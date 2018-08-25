@@ -183,24 +183,15 @@ public class MatchScraper {
 
 				matchDao.save(match);
 			} else {
-				//oddsDelta
-				OddsDelta od = new OddsDelta(key, Param.bookmakerHKJC, key, d, 
-						oddsHad.get(key).getOddsHadHome(), oddsHad.get(key).getOddsHadDraw(), oddsHad.get(key).getOddsHadAway(), 
-						null, null, null, 
-						oddsHiLo.get(key).getOddsHiLoLine(), oddsHiLo.get(key).getOddsHiLoHigh(), oddsHiLo.get(key).getOddsHiLoLow(), 
-						null, null, null);
 				if (oddsHandicap.containsKey(key)) {
+					OddsDelta od = new OddsDelta(key, Param.bookmakerHKJC, key, d,
+							null, null, null);
 					od.setOddsHandicapLine(oddsHandicap.get(key).getOddsHandicapLine());
 					od.setOddsHandicapHome(oddsHandicap.get(key).getOddsHandicapHome());
 					od.setOddsHandicapAway(oddsHandicap.get(key).getOddsHandicapAway());
+					logger.info(od);
+					odDao.save(od);
 				}
-				if (oddsCornerHiLo.containsKey(key)) {
-					od.setOddsCornerHiLoLine(oddsCornerHiLo.get(key).getOddsCornerHiLoLine());
-					od.setOddsCornerHiLoHigh(oddsCornerHiLo.get(key).getOddsCornerHiLoHigh());
-					od.setOddsCornerHiLoLow(oddsCornerHiLo.get(key).getOddsCornerHiLoLow());
-				}
-				logger.info(od);
-				odDao.save(od);
 			}
 		}
 		updateResult();

@@ -44,9 +44,9 @@ public class MoScraper {
 				Float uo = Float.parseFloat(fixture.attr("uo"));
 				Float li = MathUtil.multiply(Float.parseFloat(fixture.attr("li")), 0.25f);
 				//TODO pass time to obj
-				od = new OddsDelta(id, Param.bookmakerMO, moId, oddsTime, wh, wd,
+				/*od = new OddsDelta(id, Param.bookmakerMO, moId, oddsTime, wh, wd,
 						wa, gLine, ho, ao,
-						li, oo, uo, null, null, null);
+						li, oo, uo, null, null, null);*/
 			}
 		}
 		return od;
