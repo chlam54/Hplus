@@ -32,6 +32,9 @@ public class MathUtil {
 	public static Float add(float a, float b) {
 		return round(new BigDecimal(a).add(new BigDecimal(b)).floatValue(), calScale);
 	}
+	public static int compareFloat(float a, float b) {
+		return new BigDecimal(a).compareTo(new BigDecimal(b));
+	}
 	public static Float summation(List<Float> list) {
 		BigDecimal temp = new BigDecimal(0);
 		for(Float f: list) {

@@ -1,11 +1,11 @@
 package com.app.scraper;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class InfoHad {
 	private String matchNum;
 	private String matchDate;
-	private Date matchTime;
+	private Timestamp matchTime;
 	private String matchType;
 	private String matchTypeEn;
 	private String homeName;
@@ -16,7 +16,7 @@ public class InfoHad {
 	private Float oddsHadDraw;
 	private Float oddsHadAway;
 	
-	public InfoHad(String matchNum, String matchDate, Date matchTime, String matchType, String matchTypeEn, String homeName,
+	public InfoHad(String matchNum, String matchDate, Timestamp matchTime, String matchType, String matchTypeEn, String homeName,
 			String homeNameEn, String awayName, String awayNameEn, Float oddsHadHome, Float oddsHadDraw,
 			Float oddsHadAway) {
 		super();
@@ -46,7 +46,7 @@ public class InfoHad {
 	public String getMatchNum() {
 		return matchNum;
 	}
-	public Date getMatchTime() {
+	public Timestamp getMatchTime() {
 		return matchTime;
 	}
 	public String getMatchType() {

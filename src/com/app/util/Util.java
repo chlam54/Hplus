@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -210,5 +211,8 @@ public class Util {
 			e.printStackTrace();
 		}
 		return Logger.getLogger(clazz);
+	}
+	public static Timestamp parseDate(Date d) {
+		return new Timestamp(d.getTime());
 	}
 }

@@ -6,6 +6,5 @@ CREATE TABLE `data`.`oddsDelta` (
     `oddsHandicapLine` float(5,3) DEFAULT NULL,
     `oddsHandicapHome` float(5,3) DEFAULT NULL,
     `oddsHandicapAway` float(5,3) DEFAULT NULL,
-    PRIMARY KEY (`id`, `bookmaker`, `oddsTime`),
-    FOREIGN KEY (`id`) REFERENCES `data`.`match`(`id`)
+    PRIMARY KEY (`id`, `bookmaker`, `oddsTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

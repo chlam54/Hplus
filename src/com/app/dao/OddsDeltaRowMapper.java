@@ -19,7 +19,7 @@ public class OddsDeltaRowMapper implements RowMapper {
 		od.setOddsHandicapAway(rs.getFloat("oddsHandicapAway"));
 		od.setOddsHandicapHome(rs.getFloat("oddsHandicapHome"));
 		od.setOddsHandicapLine(rs.getFloat("oddsHandicapLine"));
-		od.setOddsTime(rs.getDate("oddsTime"));
+		od.setOddsTime(rs.getTimestamp("oddsTime"));
 		
 		return od;
 	}

@@ -17,7 +17,7 @@ public class MatchRowMapper implements RowMapper {
 		m.setId(rs.getString("id"));
 		m.setMatchNum(rs.getString("matchNum"));
 		m.setMatchDate(rs.getString("matchDate"));
-		m.setMatchTime(rs.getDate("matchTime"));
+		m.setMatchTime(rs.getTimestamp("matchTime"));
 		m.setMatchType(rs.getString("matchType"));
 		m.setMatchTypeEn(rs.getString("matchTypeEn"));
 		m.setHomeName(rs.getString("homeName"));
@@ -27,7 +27,7 @@ public class MatchRowMapper implements RowMapper {
 		m.setHomeLRank((Integer) rs.getObject("homeLRank"));
 		m.setAwayLRank((Integer) rs.getObject("awayLRank"));
 		
-		m.setOddsTime(rs.getDate("oddsTime"));
+		m.setOddsTime(rs.getTimestamp("oddsTime"));
 		m.setOddsHadHome((Float) rs.getObject("oddsHadHome"));
 		m.setOddsHadDraw((Float) rs.getObject("oddsHadDraw"));
 		m.setOddsHadAway((Float) rs.getObject("oddsHadAway"));

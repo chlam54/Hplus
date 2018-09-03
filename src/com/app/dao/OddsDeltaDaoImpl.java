@@ -26,5 +26,12 @@ public class OddsDeltaDaoImpl extends MatchDaoImpl implements OddsDeltaDao {
 	private List<OddsDelta> list(String sql, Object[] args){
 		return (List<OddsDelta>)this.jdbcTemplate.query(sql, args, new OddsDeltaRowMapper());
 	}
-
+	
+	public OddsDelta getLatest(String id) {
+		String sql = "SELECT id, bookmaker, bid, max(oddsTime) as oddsTime, "
+				+ "oddsHandicapLine, oddsHandicapHome, oddsHandicapAway "
+				+ "FROM data.oddsdelta where id = ?;";
+		return (OddsDelta)this.jdbcTemplate.queryForObject(sql, new Object[] {id}, 
+				new OddsDeltaRowMapper());
+	}
 }

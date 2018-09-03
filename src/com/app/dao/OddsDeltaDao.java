@@ -6,4 +6,6 @@ public interface OddsDeltaDao {
 	
 	void save(OddsDelta m);
 
+	OddsDelta getLatest(String id);
+
 }

@@ -1,6 +1,7 @@
 package com.app.scraper;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class MatchScraper {
 				Document doc = jsoupConnect(builder.getURI());
 				Element jsonData = doc.select("body").get(0);
 				JSONArray array = new JSONArray(jsonData.text());
-				if (array.length() == 0) {
+				if (array.toString().length() < 10) {
 					next = false;
 					break;
 				}
@@ -82,6 +83,9 @@ public class MatchScraper {
 								firstHT = temp;
 							if ("SecondHalf".equals(temp.getString("periodvalue")))
 								secondHT = temp;
+						}
+						if(secondHT == null) {
+							break;	//skip for non-Finished match
 						}
 						homeGoal = Integer.parseInt(secondHT.getString("home"));
 						awayGoal = Integer.parseInt(secondHT.getString("away"));
@@ -153,7 +157,7 @@ public class MatchScraper {
 		Map<String, InfoHdc> oddsHandicap = scrapeOddsHandicap();
 		Map<String, InfoHil> oddsHiLo = scrapeOddsHiLo();
 		Map<String, InfoChl> oddsCornerHiLo = scrapeOddsCornerHiLo();
-		Date d = new Date();
+		Timestamp d = Util.parseDate(new Date());
 		
 		for (String key : oddsHad.keySet()) {	
 			if (matchDao.get(key) == null) {
@@ -184,13 +188,17 @@ public class MatchScraper {
 				matchDao.save(match);
 			} else {
 				if (oddsHandicap.containsKey(key)) {
-					OddsDelta od = new OddsDelta(key, Param.bookmakerHKJC, key, d,
+					OddsDelta od = odDao.getLatest(key);
+					OddsDelta newOd = new OddsDelta(key, Param.bookmakerHKJC, key, Util.parseDate(d),
 							null, null, null);
-					od.setOddsHandicapLine(oddsHandicap.get(key).getOddsHandicapLine());
-					od.setOddsHandicapHome(oddsHandicap.get(key).getOddsHandicapHome());
-					od.setOddsHandicapAway(oddsHandicap.get(key).getOddsHandicapAway());
-					logger.info(od);
-					odDao.save(od);
+					newOd.setOddsHandicapLine(oddsHandicap.get(key).getOddsHandicapLine());
+					newOd.setOddsHandicapHome(oddsHandicap.get(key).getOddsHandicapHome());
+					newOd.setOddsHandicapAway(oddsHandicap.get(key).getOddsHandicapAway());
+					
+					if(!od.equals(newOd)) {
+						logger.info(newOd);
+						odDao.save(newOd);
+					}
 				}
 			}
 		}
@@ -220,7 +228,7 @@ public class MatchScraper {
 				String matchNum = match.getString("matchDay") + " " + match.getString("matchNum");
 				String matchDate = Util.parseDate(Util.parse(match.getString("matchDate"), "yyyy-MM-ddX"),
 						"dd-MM-yyyy");
-				Date matchTime = Util.parse(match.getString("matchTime"), "yyyy-MM-dd'T'HH:mm:ssX");
+				Timestamp matchTime = Util.parseDate(Util.parse(match.getString("matchTime"), "yyyy-MM-dd'T'HH:mm:ssX"));
 				String matchType = match.getJSONObject("league").getString("leagueNameCH");
 				String matchTypeEn = match.getJSONObject("league").getString("leagueNameEN");
 				String homeName = match.getJSONObject("homeTeam").getString("teamNameCH");
@@ -456,6 +464,6 @@ public class MatchScraper {
 
 	public static Document jsoupConnect(String uri) throws IOException {
 		sleep();
-		return Jsoup.connect(uri).ignoreContentType(true).get();
+		return Jsoup.connect(uri).ignoreContentType(true).timeout(2000).get();
 	}
 }

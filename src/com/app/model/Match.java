@@ -1,7 +1,7 @@
 package com.app.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Match {
 
@@ -24,7 +24,7 @@ public class Match {
 	
 	private String matchNum;
 	private String matchDate;
-	private Date matchTime;
+	private Timestamp matchTime;
 	private String matchType;
 	private String matchTypeEn;
 	
@@ -35,7 +35,7 @@ public class Match {
 	private Integer homeLRank;
 	private Integer awayLRank;
 	
-	private Date oddsTime;
+	private Timestamp oddsTime;
 	private Float oddsHadHome;
 	private Float oddsHadDraw;
 	private Float oddsHadAway;
@@ -61,8 +61,8 @@ public class Match {
 	private Float resultHdcAwayRoi;
 	private Integer resultCorner;
 	public Match() {}
-	public Match(String id, String matchNum, String matchDate, Date matchTime, String matchType, String matchTypeEn, String homeName,
-			String awayName, String homeNameEn, String awayNameEn, Integer homeLRank, Integer awayLRank, Date oddsTime,
+	public Match(String id, String matchNum, String matchDate, Timestamp matchTime, String matchType, String matchTypeEn, String homeName,
+			String awayName, String homeNameEn, String awayNameEn, Integer homeLRank, Integer awayLRank, Timestamp oddsTime,
 			Float oddsHadHome, Float oddsHadDraw, Float oddsHadAway, Float oddsHandicapLine, Float oddsHandicapHome,
 			Float oddsHandicapAway, Float oddsHiLoLine, Float oddsHiLoHigh, Float oddsHiLoLow, Float oddsCornerHiLoLine,
 			Float oddsCornerHiLoHigh, Float oddsCornerHiLoLow, ArrayList<RecentForm> rfHome,
@@ -112,7 +112,7 @@ public class Match {
 	public String getMatchNum() {
 		return matchNum;
 	}
-	public Date getMatchTime() {
+	public Timestamp getMatchTime() {
 		return matchTime;
 	}
 	public String getMatchType() {
@@ -139,7 +139,7 @@ public class Match {
 	public Integer getAwayLRank() {
 		return awayLRank;
 	}
-	public Date getOddsTime() {
+	public Timestamp getOddsTime() {
 		return oddsTime;
 	}
 	public Float getOddsHadHome() {
@@ -214,7 +214,7 @@ public class Match {
 	public void setMatchNum(String matchNum) {
 		this.matchNum = matchNum;
 	}
-	public void setMatchTime(Date matchTime) {
+	public void setMatchTime(Timestamp matchTime) {
 		this.matchTime = matchTime;
 	}
 	public void setMatchType(String matchType) {
@@ -241,7 +241,7 @@ public class Match {
 	public void setAwayLRank(Integer awayLRank) {
 		this.awayLRank = awayLRank;
 	}
-	public void setOddsTime(Date oddsTime) {
+	public void setOddsTime(Timestamp oddsTime) {
 		this.oddsTime = oddsTime;
 	}
 	public void setOddsHadHome(Float oddsHadHome) {

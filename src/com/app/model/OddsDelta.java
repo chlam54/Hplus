@@ -1,15 +1,17 @@
 package com.app.model;
 
-import java.util.Date;
+import java.sql.Timestamp;
+
+import com.app.util.MathUtil;
 
 public class OddsDelta {
 	private String id;
 	private String bookmaker;
 	private String bid;
-	private Date oddsTime;
+	private Timestamp oddsTime;
 	private Float oddsHandicapLine, oddsHandicapHome, oddsHandicapAway;
 	public OddsDelta() {}
-	public OddsDelta(String id, String bookmaker, String bid, Date oddsTime, Float oddsHandicapLine,
+	public OddsDelta(String id, String bookmaker, String bid, Timestamp oddsTime, Float oddsHandicapLine,
 			Float oddsHandicapHome, Float oddsHandicapAway) {
 		super();
 		this.id = id;
@@ -38,10 +40,10 @@ public class OddsDelta {
 	public void setBid(String bid) {
 		this.bid = bid;
 	}
-	public Date getOddsTime() {
+	public Timestamp getOddsTime() {
 		return oddsTime;
 	}
-	public void setOddsTime(Date oddsTime) {
+	public void setOddsTime(Timestamp oddsTime) {
 		this.oddsTime = oddsTime;
 	}
 	public Float getOddsHandicapLine() {
@@ -71,12 +73,13 @@ public class OddsDelta {
 	@Override
 	public boolean equals(Object obj) {
 		OddsDelta od = (OddsDelta)obj;
+		
 		boolean isSame = od.getId()==this.id &&
 				od.getBookmaker()==this.bookmaker &&
 				od.getBid()==this.bid &&
-				od.getOddsHandicapAway()==this.oddsHandicapAway &&
-				od.getOddsHandicapHome()==this.oddsHandicapHome &&
-				od.getOddsHandicapLine()==this.oddsHandicapLine;
+				MathUtil.compareFloat(od.getOddsHandicapAway(), this.oddsHandicapAway)==0 &&
+				MathUtil.compareFloat(od.getOddsHandicapHome(), this.oddsHandicapHome)==0 &&
+				MathUtil.compareFloat(od.getOddsHandicapLine(), this.oddsHandicapLine)==0;
 		return isSame;
 	}
 }
