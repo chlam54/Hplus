@@ -16,11 +16,9 @@ import com.app.util.Util;
 public class Scheduler {
 	private final static Logger logger = Util.getLogger(Scheduler.class);
 
-	//600000
-	@Scheduled(fixedDelay = 600)
+	@Scheduled(fixedDelay = 600000)
 	public static void writeSth() {
-		System.out.println("hi");
-//		scrapeHKJC();
+		scrapeHKJC();
 	}
 
 	public static void main(String[] args) {

@@ -74,9 +74,9 @@ public class OddsDelta {
 	public boolean equals(Object obj) {
 		OddsDelta od = (OddsDelta)obj;
 		
-		boolean isSame = od.getId()==this.id &&
-				od.getBookmaker()==this.bookmaker &&
-				od.getBid()==this.bid &&
+		boolean isSame = od.getId().equals(this.id) &&
+				od.getBookmaker().equals(this.bookmaker) &&
+				od.getBid().equals(this.bid) &&
 				MathUtil.compareFloat(od.getOddsHandicapAway(), this.oddsHandicapAway)==0 &&
 				MathUtil.compareFloat(od.getOddsHandicapHome(), this.oddsHandicapHome)==0 &&
 				MathUtil.compareFloat(od.getOddsHandicapLine(), this.oddsHandicapLine)==0;

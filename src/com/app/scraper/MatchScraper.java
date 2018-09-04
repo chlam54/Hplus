@@ -212,9 +212,7 @@ public class MatchScraper {
 		logger.info(builder.getURI());
 		Document doc;
 		try {
-			doc = jsoupConnect(builder.getURI());
-			Element jsonData = doc.select("body").get(0);
-			JSONArray array = new JSONArray(jsonData.text());
+			JSONArray array = getArrJsoupConnect(builder.getURI());
 			JSONArray activeMatch = null;
 			for (int i = 0; i < array.length(); i++) {
 				if ("ActiveMatches".equals(array.getJSONObject(i).getString("name"))) {
@@ -259,9 +257,7 @@ public class MatchScraper {
 		logger.info(builder.getURI());
 		Document doc;
 		try {
-			doc = jsoupConnect(builder.getURI());
-			Element jsonData = doc.select("body").get(0);
-			JSONArray array = new JSONArray(jsonData.text());
+			JSONArray array = getArrJsoupConnect(builder.getURI());
 			JSONArray activeMatch = null;
 			for (int i = 0; i < array.length(); i++) {
 				if ("ActiveMatches".equals(array.getJSONObject(i).getString("name"))) {
@@ -293,11 +289,8 @@ public class MatchScraper {
 		URIBuilder builder = new URIBuilder(Param.urlHkjcGetJson);
 		builder.addParameter("jsontype", "odds_hil.aspx");
 		logger.info(builder.getURI());
-		Document doc;
 		try {
-			doc = jsoupConnect(builder.getURI());
-			Element jsonData = doc.select("body").get(0);
-			JSONArray array = new JSONArray(jsonData.text());
+			JSONArray array = getArrJsoupConnect(builder.getURI());
 			JSONArray activeMatch = null;
 			for (int i = 0; i < array.length(); i++) {
 				if ("ActiveMatches".equals(array.getJSONObject(i).getString("name"))) {
@@ -339,9 +332,7 @@ public class MatchScraper {
 		logger.info(builder.getURI());
 		Document doc;
 		try {
-			doc = jsoupConnect(builder.getURI());
-			Element jsonData = doc.select("body").get(0);
-			JSONArray array = new JSONArray(jsonData.text());
+			JSONArray array = getArrJsoupConnect(builder.getURI());
 			JSONArray activeMatch = null;
 			for (int i = 0; i < array.length(); i++) {
 				if ("ActiveMatches".equals(array.getJSONObject(i).getString("name"))) {
@@ -464,6 +455,23 @@ public class MatchScraper {
 
 	public static Document jsoupConnect(String uri) throws IOException {
 		sleep();
-		return Jsoup.connect(uri).ignoreContentType(true).timeout(2000).get();
+		return Jsoup.connect(uri).ignoreContentType(true).timeout(5000).get();
+	}
+	
+	public static JSONArray getArrJsoupConnect(String uri) throws IOException {
+		boolean req2Connect = true;
+		JSONArray array = null;
+		while(req2Connect) {
+			Document doc = jsoupConnect(uri);
+			Element jsonData = doc.select("body").get(0);
+			try {
+				array = new JSONArray(jsonData.text());
+				req2Connect = false;
+			} catch(Exception e) {
+				req2Connect = true;
+				logger.debug("Connection Failure");
+			}
+		}
+		return array;
 	}
 }
