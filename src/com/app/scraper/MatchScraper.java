@@ -195,7 +195,7 @@ public class MatchScraper {
 					newOd.setOddsHandicapHome(oddsHandicap.get(key).getOddsHandicapHome());
 					newOd.setOddsHandicapAway(oddsHandicap.get(key).getOddsHandicapAway());
 					
-					if(!od.equals(newOd)) {
+					if(od==null || !newOd.equals(od)) {
 						logger.info(newOd);
 						odDao.save(newOd);
 					}
@@ -452,6 +452,13 @@ public class MatchScraper {
 			e.printStackTrace();
 		}
 	}
+	private static void sleep(int milisec) {
+		try {
+			Thread.sleep(milisec);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static Document jsoupConnect(String uri) throws IOException {
 		sleep();
@@ -463,13 +470,15 @@ public class MatchScraper {
 		JSONArray array = null;
 		while(req2Connect) {
 			Document doc = jsoupConnect(uri);
-			Element jsonData = doc.select("body").get(0);
+			
 			try {
+				Element jsonData = doc.select("body").get(0);
 				array = new JSONArray(jsonData.text());
 				req2Connect = false;
 			} catch(Exception e) {
+				sleep(10000);
 				req2Connect = true;
-				logger.debug("Connection Failure");
+				logger.info("Connection Failure");
 			}
 		}
 		return array;

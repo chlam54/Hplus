@@ -2,13 +2,18 @@ package com.app.dao;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.app.model.OddsDelta;
+import com.app.scraper.MatchScraper;
+import com.app.util.Util;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 public class OddsDeltaDaoImpl extends MatchDaoImpl implements OddsDeltaDao {
 	private static final String table = "data.oddsDelta";
+	private final static Logger logger = Util.getLogger(OddsDeltaDaoImpl.class);
+	
 	public OddsDeltaDaoImpl() {
 		super();
 	}
@@ -28,10 +33,17 @@ public class OddsDeltaDaoImpl extends MatchDaoImpl implements OddsDeltaDao {
 	}
 	
 	public OddsDelta getLatest(String id) {
-		String sql = "SELECT id, bookmaker, bid, max(oddsTime) as oddsTime, "
+		String sql = "SELECT id, bookmaker, bid, oddsTime, "
 				+ "oddsHandicapLine, oddsHandicapHome, oddsHandicapAway "
-				+ "FROM data.oddsdelta where id = ?;";
-		return (OddsDelta)this.jdbcTemplate.queryForObject(sql, new Object[] {id}, 
+				+ "FROM "+table+" where id = ? "
+				+ "AND oddsTime = (SELECT max(oddsTime) FROM "+table+" where id = ? group by id);";
+		OddsDelta result = null;
+		try {
+			result = (OddsDelta)this.jdbcTemplate.queryForObject(sql, new Object[] {id, id}, 
 				new OddsDeltaRowMapper());
+		} catch(Exception e) {
+			logger.info("Fail to get Latest::"+id);
+		}
+		return result;
 	}
 }
