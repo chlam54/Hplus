@@ -52,9 +52,7 @@ public class MatchScraper {
 			logger.info(builder.getURI());
 
 			try {
-				Document doc = jsoupConnect(builder.getURI());
-				Element jsonData = doc.select("body").get(0);
-				JSONArray array = new JSONArray(jsonData.text());
+				JSONArray array = getArrJsoupConnect(builder.getURI());
 				if (array.toString().length() < 10) {
 					next = false;
 					break;
@@ -462,7 +460,7 @@ public class MatchScraper {
 
 	public static Document jsoupConnect(String uri) throws IOException {
 		sleep();
-		return Jsoup.connect(uri).ignoreContentType(true).timeout(5000).get();
+		return Jsoup.connect(uri).ignoreContentType(true).timeout(5000).post();
 	}
 	
 	public static JSONArray getArrJsoupConnect(String uri) throws IOException {
