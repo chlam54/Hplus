@@ -5,6 +5,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.math3.distribution.PoissonDistribution;
+
 public class MathUtil {
 	public static final int stdScale = 3;
 	public static final int calScale = 10;
@@ -45,5 +47,21 @@ public class MathUtil {
 	public static Float mean(List<Float> list) {
 		return divide(summation(list), list.size());
 	}
-	
+	/**
+	 * @param mean
+	 * @param x
+	 * @param inequalitySign sign ?
+	 * @return P(X ? x) <=
+	 */
+	public static Float poissonProbability(float mean, int x, Sign inequalitySign) {
+		PoissonDistribution pd = new PoissonDistribution(mean);
+		switch (inequalitySign) {
+			case EQ	: return (float)pd.probability(x);
+			case LTE	: return (float)pd.cumulativeProbability(x);
+			case LT	: return subtract((float)pd.cumulativeProbability(x), (float)pd.probability(x));
+			case GT	: return subtract(1f, (float)pd.cumulativeProbability(x));
+			case GTE	: return add(subtract(1f, (float)pd.cumulativeProbability(x)), (float)pd.probability(x));
+			default	: return null;
+		}
+	}
 }

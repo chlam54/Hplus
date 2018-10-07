@@ -10,8 +10,7 @@ import com.app.scraper.MatchScraper;
 import com.app.util.Util;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
-public class OddsDeltaDaoImpl extends MatchDaoImpl implements OddsDeltaDao {
-	private static final String table = "data.oddsDelta";
+public class OddsDeltaDaoImpl extends AbstractDaoImpl implements OddsDeltaDao {
 	private final static Logger logger = Util.getLogger(OddsDeltaDaoImpl.class);
 	
 	public OddsDeltaDaoImpl() {
