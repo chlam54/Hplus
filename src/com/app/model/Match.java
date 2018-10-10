@@ -49,6 +49,10 @@ public class Match {
 	private Float oddsCornerHiLoHigh;
 	private Float oddsCornerHiLoLow;
 	
+	/**
+	 * 0: Latest
+	 * 8: Oldest
+	 */
 	private ArrayList<RecentForm> rfHome;
 	private ArrayList<RecentForm> rfAway;
 	

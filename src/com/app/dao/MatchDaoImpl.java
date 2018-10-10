@@ -9,7 +9,6 @@ import com.app.model.Match;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 public class MatchDaoImpl extends AbstractDaoImpl implements MatchDao {
-	private static final String table = "data.match";
 	public MatchDaoImpl() {
 		super();
 	}
@@ -26,8 +25,8 @@ public class MatchDaoImpl extends AbstractDaoImpl implements MatchDao {
 		return m;
 	}
 	
-	
-	private List<Match> list(String sql, Object[] args){
+	@Override
+	public List<Match> list(String sql, Object[] args){
 		return (List<Match>)this.jdbcTemplate.query(sql, args, new MatchRowMapper());
 	}
 	@Override
