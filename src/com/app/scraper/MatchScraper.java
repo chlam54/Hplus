@@ -70,7 +70,8 @@ public class MatchScraper {
 					Integer homeGoal = null, awayGoal = null, totalGoal = null, corner = null;
 					String result = null;
 					if ("EndedAfterFT".equals(match.getJSONObject("liveEvent").getString("matchstate"))
-							|| "EndedAfterPK".equals(match.getJSONObject("liveEvent").getString("matchstate"))) {
+							|| "EndedAfterPK".equals(match.getJSONObject("liveEvent").getString("matchstate"))
+							|| "EndedAfterET".equals(match.getJSONObject("liveEvent").getString("matchstate"))) {
 
 						JSONArray accScore = match.getJSONArray("accumulatedscore");
 						JSONObject firstHT = null;

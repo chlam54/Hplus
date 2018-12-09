@@ -1,7 +1,7 @@
 package com.app.scraper;
 
 public class Param {
-	public static final String urlHkjcGetJson = "http://bet.hkjc.com/football/getJSON.aspx";
+	public static final String urlHkjcGetJson = "https://bet.hkjc.com/football/getJSON.aspx";
 	
 	public static final String urlHkjcRecentForm = "http://football.hkjc.com/football/iframe/statistics/head-to-head/recent-form-iframe.aspx";
 	
