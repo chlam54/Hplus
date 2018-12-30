@@ -18,12 +18,18 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.app.dao.MatchDao;
 import com.app.dao.MatchDaoImpl;
-import com.app.dao.OddsDeltaDao;
-import com.app.dao.OddsDeltaDaoImpl;
+import com.app.dao.DiffHadDaoImpl;
+import com.app.dao.DiffHdcDaoImpl;
+import com.app.dao.DiffHilDaoImpl;
+import com.app.intf.MatchDao;
+import com.app.intf.DiffHadDao;
+import com.app.intf.DiffHdcDao;
+import com.app.intf.DiffHilDao;
 import com.app.model.Match;
-import com.app.model.OddsDelta;
+import com.app.model.DiffHad;
+import com.app.model.DiffHdc;
+import com.app.model.DiffHiLo;
 import com.app.model.RecentForm;
 import com.app.util.URIBuilder;
 import com.app.util.Util;
@@ -35,7 +41,9 @@ public class MatchScraper {
 	// TODO Betfair trading volume
 
 	private static MatchDao matchDao = new MatchDaoImpl();
-	private static OddsDeltaDao odDao = new OddsDeltaDaoImpl();
+	private static DiffHadDao diffHadDao = new DiffHadDaoImpl();
+	private static DiffHdcDao diffHdcDao = new DiffHdcDaoImpl();
+	private static DiffHilDao diffHiLoDao = new DiffHilDaoImpl();
 	private final static Logger logger = Util.getLogger(MatchScraper.class);
 	
 	public static HashMap<String, InfoResult> scrapeResult(String dateKey) {
@@ -143,8 +151,8 @@ public class MatchScraper {
 					m.setResultCorner(ir.getCorner());
 					matchDao.updateResult(m);
 				} else {
-					logger.info("delete incomplete match::"+m.getId());
-					matchDao.deleteResult(m);
+					logger.info("pending incomplete match::"+m.getId());
+					//matchDao.deleteResult(m);
 				}
 			}
 		}
@@ -156,7 +164,7 @@ public class MatchScraper {
 		Map<String, InfoHdc> oddsHandicap = scrapeOddsHandicap();
 		Map<String, InfoHil> oddsHiLo = scrapeOddsHiLo();
 		Map<String, InfoChl> oddsCornerHiLo = scrapeOddsCornerHiLo();
-		Timestamp d = Util.parseDate(new Date());
+		Timestamp d = Util.parseDate(Util.getHongKongDate());
 		
 		for (String key : oddsHad.keySet()) {	
 			if (matchDao.get(key) == null) {
@@ -186,20 +194,40 @@ public class MatchScraper {
 
 				matchDao.save(match);
 			} else {
-				if (oddsHandicap.containsKey(key)) {
-					OddsDelta od = odDao.getLatest(key);
-					OddsDelta newOd = new OddsDelta(key, Param.bookmakerHKJC, key, Util.parseDate(d),
-							null, null, null);
-					newOd.setOddsHandicapLine(oddsHandicap.get(key).getOddsHandicapLine());
-					newOd.setOddsHandicapHome(oddsHandicap.get(key).getOddsHandicapHome());
-					newOd.setOddsHandicapAway(oddsHandicap.get(key).getOddsHandicapAway());
+				if (oddsHad.containsKey(key)) {
+					DiffHad od = diffHadDao.getLatest(key);
+					DiffHad newOd = new DiffHad(key, Param.bookmakerHKJC, Util.parseDate(d),
+							oddsHad.get(key).getOddsHadHome(), oddsHad.get(key).getOddsHadAway(), oddsHad.get(key).getOddsHadDraw());
 					
 					if(od==null || !newOd.equals(od)) {
 						logger.info(newOd);
-						odDao.save(newOd);
+						diffHadDao.save(newOd);
+					}
+				}
+				
+				if (oddsHandicap.containsKey(key)) {
+					DiffHdc od = diffHdcDao.getLatest(key);
+					DiffHdc newOd = new DiffHdc(key, Param.bookmakerHKJC, Util.parseDate(d),
+							oddsHandicap.get(key).getOddsHandicapLine(), oddsHandicap.get(key).getOddsHandicapHome(), oddsHandicap.get(key).getOddsHandicapAway());
+					
+					if(od==null || !newOd.equals(od)) {
+						logger.info(newOd);
+						diffHdcDao.save(newOd);
+					}
+				}
+				
+				if (oddsHiLo.containsKey(key)) {
+					DiffHiLo od = diffHiLoDao.getLatest(key);
+					DiffHiLo newOd = new DiffHiLo(key, Param.bookmakerHKJC, Util.parseDate(d),
+							oddsHiLo.get(key).getOddsHiLoLine(), oddsHiLo.get(key).getOddsHiLoHigh(), oddsHiLo.get(key).getOddsHiLoLow());
+					
+					if(od==null || !newOd.equals(od)) {
+						logger.info(newOd);
+						diffHiLoDao.save(newOd);
 					}
 				}
 			}
+			
 		}
 		updateResult();
 	}
@@ -444,23 +472,8 @@ public class MatchScraper {
 		return ("\u5BA2".equals(str)) ? "A" : "H";
 	}
 
-	private static void sleep() {
-		try {
-			Thread.sleep(Param.sleepTime);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	private static void sleep(int milisec) {
-		try {
-			Thread.sleep(milisec);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public static Document jsoupConnect(String uri) throws IOException {
-		sleep();
+		Util.sleep();
 		return Jsoup.connect(uri).ignoreContentType(true).timeout(5000).post();
 	}
 	
@@ -475,7 +488,7 @@ public class MatchScraper {
 				array = new JSONArray(jsonData.text());
 				req2Connect = false;
 			} catch(Exception e) {
-				sleep(10000);
+				Util.sleep(10000);
 				req2Connect = true;
 				logger.info("Connection Failure");
 			}

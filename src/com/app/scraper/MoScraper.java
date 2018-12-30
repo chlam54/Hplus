@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import com.app.model.OddsDelta;
+import com.app.model.DiffHad;
 import com.app.util.MathUtil;
 import com.app.util.Util;
 
@@ -22,8 +22,8 @@ public class MoScraper {
 	}
 
 
-	public OddsDelta scrapeOdds(String id, String moId) {
-		OddsDelta od = null;
+	public DiffHad scrapeOdds(String id, String moId) {
+		DiffHad od = null;
 		for (Element fixture : odds.select("Fixture")) {
 			if (moId.equals(fixture.attr("id"))) {
 				// Odds HAD
@@ -76,7 +76,7 @@ public class MoScraper {
 		try {
 			odds = MatchScraper.jsoupConnect(Param.urlMoOdds);
 			config = MatchScraper.jsoupConnect(Param.urlMoOddsConfig);
-			oddsTime = new Date();
+			oddsTime = Util.getHongKongDate();
 		} catch (Exception e) {
 			logger.error("refreshData exception");
 		}

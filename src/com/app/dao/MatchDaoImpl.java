@@ -1,12 +1,16 @@
 package com.app.dao;
 
-import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.app.intf.MatchDao;
 import com.app.model.Match;
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import com.app.util.Util;
 
 public class MatchDaoImpl extends AbstractDaoImpl implements MatchDao {
 	public MatchDaoImpl() {
@@ -18,7 +22,7 @@ public class MatchDaoImpl extends AbstractDaoImpl implements MatchDao {
 		Match m = null;
 		String sql = "select * from "+table+" where id = ?";
 		try {
-			m = (Match) this.jdbcTemplate.queryForObject(sql, new Object[] { id }, new MatchRowMapper());
+			m = (Match) this.jdbcTemplate.queryForObject(sql, new Object[] { id }, new RowMapperMatch());
 		} catch(Exception e) {
 			return null;
 		}
@@ -27,7 +31,7 @@ public class MatchDaoImpl extends AbstractDaoImpl implements MatchDao {
 	
 	@Override
 	public List<Match> list(String sql, Object[] args){
-		return (List<Match>)this.jdbcTemplate.query(sql, args, new MatchRowMapper());
+		return (List<Match>)this.jdbcTemplate.query(sql, args, new RowMapperMatch());
 	}
 	@Override
 	public List<Match> updateResultList(){
@@ -83,7 +87,7 @@ public class MatchDaoImpl extends AbstractDaoImpl implements MatchDao {
 				this.jdbcTemplate.update(sql, new Object[] {
 				m.getId(), m.getMatchNum(), m.getMatchDate(), m.getMatchTime(), m.getMatchType(), m.getMatchTypeEn(),
 				m.getHomeName(), m.getAwayName(), m.getHomeNameEn(), m.getAwayNameEn(), m.getHomeLRank(), m.getAwayLRank(),
-				new Date(), m.getOddsHadHome(), m.getOddsHadDraw(), m.getOddsHadAway(),
+				Util.getHongKongDate(), m.getOddsHadHome(), m.getOddsHadDraw(), m.getOddsHadAway(),
 				m.getOddsHandicapLine(), m.getOddsHandicapHome(), m.getOddsHandicapAway(),
 				m.getOddsHiLoLine(), m.getOddsHiLoHigh(), m.getOddsHiLoLow(),
 				m.getOddsCornerHiLoLine(), m.getOddsCornerHiLoHigh(), m.getOddsCornerHiLoLow(),
@@ -106,7 +110,7 @@ public class MatchDaoImpl extends AbstractDaoImpl implements MatchDao {
 				m.getResult(), m.getResultHomeGoal(), m.getResultAwayGoal(), m.getResultTotalGoal(), m.getResultHad(), m.getResultHdcHomeRoi(), m.getResultHdcAwayRoi(), m.getResultCorner()
 				});
 			} catch(Exception e) {
-				//skip
+				e.printStackTrace();
 			}
 		}
 	}

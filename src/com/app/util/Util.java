@@ -10,9 +10,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
+import com.app.scraper.Param;
 
 public class Util {
 	private final static Logger logger = getLogger(Util.class);
@@ -214,5 +217,33 @@ public class Util {
 	}
 	public static Timestamp parseDate(Date d) {
 		return new Timestamp(d.getTime());
+	}
+	public static void sleep() {
+		try {
+			Thread.sleep(Param.sleepTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void sleep(int milisec) {
+		try {
+			Thread.sleep(milisec);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	public static Date getHongKongDate() {
+		Date date = new Date();
+		SimpleDateFormat sdfHK = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");
+		sdfHK.setTimeZone(TimeZone.getTimeZone("Asia/Hong_Kong"));
+		String dateStrHK = sdfHK.format(date);
+		try {
+			return sdfHK.parse(dateStrHK);
+		} catch (ParseException e) {
+			return date;
+		}
+	}
+	public static void main(String[] args) {
+		System.out.println(getHongKongDate());
 	}
 }
