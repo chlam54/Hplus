@@ -12,4 +12,7 @@ public class Param {
 	
 	public static final String bookmakerHKJC = "HKJC";
 	public static final String bookmakerMO = "MACAUSLOT";
+	
+	public static final String teamHome = "H";
+	public static final String teamAway = "A";
 }

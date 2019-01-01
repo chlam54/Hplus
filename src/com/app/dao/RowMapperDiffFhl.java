@@ -6,18 +6,18 @@ import java.sql.Timestamp;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.app.model.DiffHdc;
+import com.app.model.DiffFhl;
 
-public class RowMapperDiffHdc implements RowMapper {
+public class RowMapperDiffFhl implements RowMapper {
 
 	@Override
 	public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-		DiffHdc od = new DiffHdc(rs.getString("id")
-				, rs.getString("bookmaker")
+		DiffFhl od = new DiffFhl(rs.getString("id")
 				, rs.getTimestamp("oddsTime")
 				, rs.getFloat("line")
-				, rs.getFloat("oddsHome")
-				, rs.getFloat("oddsAway"));
+				, rs.getFloat("oddsHi")
+				, rs.getFloat("oddsLo"));
+		
 		return od;
 	}
 

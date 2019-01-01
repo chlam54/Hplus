@@ -5,7 +5,7 @@ import java.util.List;
 import com.app.model.Match;
 
 public interface MatchDao {
-	public static final String table = "data.match";
+	public static final String table = "match";
 	
 	void save(Match m);
 
@@ -16,7 +16,5 @@ public interface MatchDao {
 	void updateResult(Match m);
 
 	List<Match> updateResultList();
-
-	void deleteResult(Match m);
 
 }

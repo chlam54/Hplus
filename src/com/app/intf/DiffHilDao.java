@@ -1,12 +1,12 @@
 package com.app.intf;
 
-import com.app.model.DiffHiLo;
+import com.app.model.DiffHil;
 
 public interface DiffHilDao {
-	public static final String table = "data.diffhilo";
+	public static final String table = "diffhil";
 	
-	void save(DiffHiLo m);
+	void save(DiffHil m);
 
-	DiffHiLo getLatest(String id);
+	DiffHil getLatest(String id);
 
 }

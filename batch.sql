@@ -12,13 +12,10 @@ CREATE TABLE `match` (
   `awayNameEn` varchar(50) DEFAULT NULL,
   `homeLRank` smallint(6) DEFAULT NULL,
   `awayLRank` smallint(6) DEFAULT NULL,
-  `result` varchar(20) DEFAULT NULL,
-  `resultHomeGoal` smallint(6) DEFAULT NULL,
-  `resultAwayGoal` smallint(6) DEFAULT NULL,
-  `resultTotalGoal` smallint(6) DEFAULT NULL,
-  `resultHad` smallint(6) DEFAULT NULL,
-  `resultHdcHomeRoi` float(5,3) DEFAULT NULL,
-  `resultHdcAwayRoi` float(5,3) DEFAULT NULL,
+  `resultHtHg` smallint(6) DEFAULT NULL,
+  `resultHtAg` smallint(6) DEFAULT NULL,
+  `resultFtHg` smallint(6) DEFAULT NULL,
+  `resultFtAg` smallint(6) DEFAULT NULL,
   `resultCorner` smallint(6) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -54,7 +51,7 @@ CREATE TABLE `diffhil` (
     `id` varchar(50) NOT NULL,
     `bookmaker` varchar(10) NOT NULL,
     `oddsTime` datetime NOT NULL,
-    `line` float(5,3) DEFAULT NULL,
+    `line` float(5,3) NOT NULL,
     `oddsHi` float(5,3) DEFAULT NULL,
     `oddsLo` float(5,3) DEFAULT NULL,
     PRIMARY KEY (`id`, `bookmaker`, `line`, `oddsTime`)
@@ -64,6 +61,7 @@ CREATE TABLE `diffhil` (
 CREATE TABLE `diffhha` (
     `id` varchar(50) NOT NULL,
     `oddsTime` datetime NOT NULL,
+	`line` float(5,3) NOT NULL,
     `oddsHome` float(5,3) DEFAULT NULL,
     `oddsAway` float(5,3) DEFAULT NULL,
 	`oddsDraw` float(5,3) DEFAULT NULL,
@@ -83,19 +81,18 @@ CREATE TABLE `difffha` (
 -- Half Time HiLo
 CREATE TABLE `difffhl` (
     `id` varchar(50) NOT NULL,
-    `bookmaker` varchar(10) NOT NULL,
     `oddsTime` datetime NOT NULL,
-    `line` float(5,3) DEFAULT NULL,
+    `line` float(5,3) NOT NULL,
     `oddsHi` float(5,3) DEFAULT NULL,
     `oddsLo` float(5,3) DEFAULT NULL,
-    PRIMARY KEY (`id`, `bookmaker`, `line`, `oddsTime`)
+    PRIMARY KEY (`id`, `line`, `oddsTime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Corner HiLo
 CREATE TABLE `diffchl` (
     `id` varchar(50) NOT NULL,
     `oddsTime` datetime NOT NULL,
-    `line` float(5,3) DEFAULT NULL,
+    `line` float(5,3) NOT NULL,
     `oddsHi` float(5,3) DEFAULT NULL,
     `oddsLo` float(5,3) DEFAULT NULL,
     PRIMARY KEY (`id`, `line`, `oddsTime`)
@@ -107,7 +104,7 @@ CREATE TABLE `history` (
 	`team` varchar(5) NOT NULL,
 	`game` varchar(20) DEFAULT NULL,
 	`date` varchar(20) DEFAULT NULL,
-	`histTeam` varchar(5) DEFAULT NULL,
+	`hisTeam` varchar(5) DEFAULT NULL,
 	`agst` varchar(20) DEFAULT NULL,
 	`result` varchar(20) DEFAULT NULL,
 	`goal` smallint(6) DEFAULT NULL,

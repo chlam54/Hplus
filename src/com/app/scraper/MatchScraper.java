@@ -19,31 +19,42 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.app.dao.MatchDaoImpl;
+import com.app.dao.DiffChlDaoImpl;
+import com.app.dao.DiffFhaDaoImpl;
+import com.app.dao.DiffFhlDaoImpl;
 import com.app.dao.DiffHadDaoImpl;
 import com.app.dao.DiffHdcDaoImpl;
+import com.app.dao.DiffHhaDaoImpl;
 import com.app.dao.DiffHilDaoImpl;
+import com.app.dao.HistoryDaoImpl;
 import com.app.intf.MatchDao;
+import com.app.intf.DiffChlDao;
+import com.app.intf.DiffFhaDao;
+import com.app.intf.DiffFhlDao;
 import com.app.intf.DiffHadDao;
 import com.app.intf.DiffHdcDao;
+import com.app.intf.DiffHhaDao;
 import com.app.intf.DiffHilDao;
+import com.app.intf.HistoryDao;
 import com.app.model.Match;
+import com.app.model.DiffChl;
 import com.app.model.DiffHad;
 import com.app.model.DiffHdc;
-import com.app.model.DiffHiLo;
-import com.app.model.RecentForm;
+import com.app.model.DiffHil;
+import com.app.model.History;
 import com.app.util.URIBuilder;
 import com.app.util.Util;
 
 public class MatchScraper {
-	// TODO spring batch scheduler or local app server
-	// TODO odds delta scraping
-	// TODO odds delta schema
-	// TODO Betfair trading volume
-
 	private static MatchDao matchDao = new MatchDaoImpl();
+	private static HistoryDao historyDao = new HistoryDaoImpl();
+	private static DiffChlDao diffChlDao = new DiffChlDaoImpl();
+	private static DiffFhaDao diffFhaDao = new DiffFhaDaoImpl();
+	private static DiffFhlDao diffFhlDao = new DiffFhlDaoImpl();
 	private static DiffHadDao diffHadDao = new DiffHadDaoImpl();
 	private static DiffHdcDao diffHdcDao = new DiffHdcDaoImpl();
-	private static DiffHilDao diffHiLoDao = new DiffHilDaoImpl();
+	private static DiffHhaDao diffHhaDao = new DiffHhaDaoImpl();
+	private static DiffHilDao diffHiLDao = new DiffHilDaoImpl();
 	private final static Logger logger = Util.getLogger(MatchScraper.class);
 	
 	public static HashMap<String, InfoResult> scrapeResult(String dateKey) {
@@ -77,10 +88,10 @@ public class MatchScraper {
 					String matchStatus = match.getString("matchStatus");
 					Integer homeGoal = null, awayGoal = null, totalGoal = null, corner = null;
 					String result = null;
-					if ("EndedAfterFT".equals(match.getJSONObject("liveEvent").getString("matchstate"))
-							|| "EndedAfterPK".equals(match.getJSONObject("liveEvent").getString("matchstate"))
-							|| "EndedAfterET".equals(match.getJSONObject("liveEvent").getString("matchstate"))) {
-
+//					if ("EndedAfterFT".equals(match.getJSONObject("liveEvent").getString("matchstate"))
+//							|| "EndedAfterPK".equals(match.getJSONObject("liveEvent").getString("matchstate"))
+//							|| "EndedAfterET".equals(match.getJSONObject("liveEvent").getString("matchstate"))) {
+					if ("false".equals(match.getJSONObject("isIncomplete").getString("matchstate"))){
 						JSONArray accScore = match.getJSONArray("accumulatedscore");
 						JSONObject firstHT = null;
 						JSONObject secondHT = null;
@@ -136,18 +147,7 @@ public class MatchScraper {
 				logger.info("updateResult::"+m.getId());
 				InfoResult ir = rMap.get(m.getId());
 				if(ir != null) {
-					Integer resultHad = Util.parseStatHad(ir.getResult());
-					Float homeHdcRoi = Util.calResultHdcRoi(ir.getResult(), m.getOddsHandicapLine(),
-							m.getOddsHandicapHome(), true);
-					Float awayHdcRoi = Util.calResultHdcRoi(ir.getResult(), m.getOddsHandicapLine(),
-							m.getOddsHandicapAway(), false);
 					m.setResult(ir.getResult());
-					m.setResultHomeGoal(ir.getHomeGoal());
-					m.setResultAwayGoal(ir.getAwayGoal());
-					m.setResultTotalGoal(ir.getHomeGoal() + ir.getAwayGoal());
-					m.setResultHad(resultHad);
-					m.setResultHdcHomeRoi(homeHdcRoi);
-					m.setResultHdcAwayRoi(awayHdcRoi);
 					m.setResultCorner(ir.getCorner());
 					matchDao.updateResult(m);
 				} else {
@@ -160,10 +160,10 @@ public class MatchScraper {
 
 	public static void scrape() {
 		// Batch Scraping
-		Map<String, InfoHad> oddsHad = scrapeOddsHad();
-		Map<String, InfoHdc> oddsHandicap = scrapeOddsHandicap();
-		Map<String, InfoHil> oddsHiLo = scrapeOddsHiLo();
-		Map<String, InfoChl> oddsCornerHiLo = scrapeOddsCornerHiLo();
+		Map<String, DiffHad> oddsHad = scrapeOddsHad();
+		Map<String, DiffHdc> oddsHandicap = scrapeOddsHandicap();
+		Map<String, DiffHil> oddsHiLo = scrapeOddsHil();
+		Map<String, DiffChl> oddsCornerHiLo = scrapeOddsCornerHil();
 		Timestamp d = Util.parseDate(Util.getHongKongDate());
 		
 		for (String key : oddsHad.keySet()) {	
@@ -217,13 +217,13 @@ public class MatchScraper {
 				}
 				
 				if (oddsHiLo.containsKey(key)) {
-					DiffHiLo od = diffHiLoDao.getLatest(key);
-					DiffHiLo newOd = new DiffHiLo(key, Param.bookmakerHKJC, Util.parseDate(d),
+					DiffHil od = diffHiLDao.getLatest(key);
+					DiffHil newOd = new DiffHil(key, Param.bookmakerHKJC, Util.parseDate(d),
 							oddsHiLo.get(key).getOddsHiLoLine(), oddsHiLo.get(key).getOddsHiLoHigh(), oddsHiLo.get(key).getOddsHiLoLow());
 					
 					if(od==null || !newOd.equals(od)) {
 						logger.info(newOd);
-						diffHiLoDao.save(newOd);
+						diffHiLDao.save(newOd);
 					}
 				}
 			}
@@ -232,8 +232,8 @@ public class MatchScraper {
 		updateResult();
 	}
 
-	public static Map<String, InfoHad> scrapeOddsHad() {
-		Map<String, InfoHad> infoMap = new HashMap<String, InfoHad>();
+	public static Map<String, DiffHad> scrapeOddsHad() {
+		Map<String, DiffHad> infoMap = new HashMap<String, DiffHad>();
 		URIBuilder builder = new URIBuilder(Param.urlHkjcGetJson);
 		builder.addParameter("jsontype", "odds_had.aspx");
 		logger.info(builder.getURI());
@@ -250,25 +250,15 @@ public class MatchScraper {
 				JSONObject match = activeMatch.getJSONObject(j);
 				String matchId = match.getString("matchID");
 				String matchStatus = match.getString("matchStatus");
-				String matchNum = match.getString("matchDay") + " " + match.getString("matchNum");
-				String matchDate = Util.parseDate(Util.parse(match.getString("matchDate"), "yyyy-MM-ddX"),
-						"dd-MM-yyyy");
-				Timestamp matchTime = Util.parseDate(Util.parse(match.getString("matchTime"), "yyyy-MM-dd'T'HH:mm:ssX"));
-				String matchType = match.getJSONObject("league").getString("leagueNameCH");
-				String matchTypeEn = match.getJSONObject("league").getString("leagueNameEN");
-				String homeName = match.getJSONObject("homeTeam").getString("teamNameCH");
-				String homeNameEn = match.getJSONObject("homeTeam").getString("teamNameEN");
-				String awayName = match.getJSONObject("awayTeam").getString("teamNameCH");
-				String awayNameEn = match.getJSONObject("awayTeam").getString("teamNameEN");
 				Float oddsHadHome = Float.parseFloat(match.getJSONObject("hadodds").getString("H").split("@")[1]);
-				Float oddsHadDraw = Float.parseFloat(match.getJSONObject("hadodds").getString("D").split("@")[1]);
 				Float oddsHadAway = Float.parseFloat(match.getJSONObject("hadodds").getString("A").split("@")[1]);
+				Float oddsHadDraw = Float.parseFloat(match.getJSONObject("hadodds").getString("D").split("@")[1]);
 
-				InfoHad infoHad = new InfoHad(matchNum, matchDate, matchTime, matchType, matchTypeEn, homeName,
-						homeNameEn, awayName, awayNameEn, oddsHadHome, oddsHadDraw, oddsHadAway);
+				DiffHad diffHad = new DiffHad(matchId, Param.bookmakerHKJC, Util.parseDate(Util.getHongKongDate()),
+						oddsHadHome, oddsHadAway, oddsHadDraw);
 				if("Defined".equals(matchStatus)) {
-					logger.info(matchId+"::"+infoHad);
-					infoMap.put(matchId, infoHad);
+					logger.info(matchId+"::"+diffHad);
+					infoMap.put(matchId, diffHad);
 				}
 			}
 		} catch (Exception e) {
@@ -277,8 +267,8 @@ public class MatchScraper {
 		return infoMap;
 	}
 
-	public static Map<String, InfoHdc> scrapeOddsHandicap() {
-		Map<String, InfoHdc> infoMap = new HashMap<String, InfoHdc>();
+	public static Map<String, DiffHdc> scrapeOddsHandicap() {
+		Map<String, DiffHdc> infoMap = new HashMap<String, DiffHdc>();
 		URIBuilder builder = new URIBuilder(Param.urlHkjcGetJson);
 		builder.addParameter("jsontype", "odds_hdc.aspx");
 		logger.info(builder.getURI());
@@ -299,10 +289,11 @@ public class MatchScraper {
 				Float oddsHandicapHome = Float.parseFloat(match.getJSONObject("hdcodds").getString("H").split("@")[1]);
 				Float oddsHandicapAway = Float.parseFloat(match.getJSONObject("hdcodds").getString("A").split("@")[1]);
 
-				InfoHdc infoHdc = new InfoHdc(oddsHandicapLine, oddsHandicapHome, oddsHandicapAway);
+				DiffHdc diffHdc = new DiffHdc(matchId, Param.bookmakerHKJC, Util.parseDate(Util.getHongKongDate()),
+						oddsHandicapLine, oddsHandicapHome, oddsHandicapAway);
 				if("Defined".equals(matchStatus)) {
-					logger.info(matchId+"::"+infoHdc);
-					infoMap.put(matchId, infoHdc);
+					logger.info(matchId+"::"+diffHdc);
+					infoMap.put(matchId, diffHdc);
 				}
 			}
 		} catch (Exception e) {
@@ -310,9 +301,9 @@ public class MatchScraper {
 		}
 		return infoMap;
 	}
-
-	public static Map<String, InfoHil> scrapeOddsHiLo() {
-		Map<String, InfoHil> infoMap = new HashMap<String, InfoHil>();
+	//TODO hilo diff line
+	public static Map<String, DiffHil> scrapeOddsHil() {
+		Map<String, DiffHil> infoMap = new HashMap<String, DiffHil>();
 		URIBuilder builder = new URIBuilder(Param.urlHkjcGetJson);
 		builder.addParameter("jsontype", "odds_hil.aspx");
 		logger.info(builder.getURI());
@@ -340,7 +331,9 @@ public class MatchScraper {
 				Float oddsHiLoHigh = Float.parseFloat(mainLine.getString("H").split("@")[1]);
 				Float oddsHiLoLow = Float.parseFloat(mainLine.getString("L").split("@")[1]);
 
-				InfoHil infoHil = new InfoHil(oddsHiLoLine, oddsHiLoHigh, oddsHiLoLow);
+				DiffHil infoHil = new DiffHil(matchId, Param.bookmakerHKJC,
+						Util.parseDate(Util.getHongKongDate()), 
+						oddsHiLoLine, oddsHiLoHigh, oddsHiLoLow);
 				if("Defined".equals(matchStatus)) {
 					logger.info(matchId+"::"+infoHil);
 					infoMap.put(matchId, infoHil);
@@ -352,8 +345,8 @@ public class MatchScraper {
 		return infoMap;
 	}
 
-	public static Map<String, InfoChl> scrapeOddsCornerHiLo() {
-		Map<String, InfoChl> infoMap = new HashMap<String, InfoChl>();
+	public static Map<String, DiffChl> scrapeOddsCornerHil() {
+		Map<String, DiffChl> infoMap = new HashMap<String, DiffChl>();
 		URIBuilder builder = new URIBuilder(Param.urlHkjcGetJson);
 		builder.addParameter("jsontype", "odds_chl.aspx");
 		logger.info(builder.getURI());
@@ -382,7 +375,8 @@ public class MatchScraper {
 				Float oddsCornerHiLoHigh = Float.parseFloat(mainLine.getString("H").split("@")[1]);
 				Float oddsCornerHiLoLow = Float.parseFloat(mainLine.getString("L").split("@")[1]);
 
-				InfoChl infoHil = new InfoChl(oddsCornerHiLoLine, oddsCornerHiLoHigh, oddsCornerHiLoLow);
+				DiffChl infoHil = new DiffChl(matchId, Util.parseDate(Util.getHongKongDate()),
+						oddsCornerHiLoLine, oddsCornerHiLoHigh, oddsCornerHiLoLow);
 				if("Defined".equals(matchStatus)) {
 					logger.info(matchId+"::"+infoHil);
 					infoMap.put(matchId, infoHil);
@@ -447,7 +441,7 @@ public class MatchScraper {
 		return map;
 	}
 
-	private static RecentForm parseRecentForm(Elements elements) {
+	private static History parseRecentForm(Elements elements) {
 		String type = elements.get(0).text().trim();
 		String date = elements.get(1).text().trim();
 		String role = maskRole(elements.get(2).text().trim());
@@ -463,13 +457,13 @@ public class MatchScraper {
 		Float hdcRoi = Util.calHdcRoi(result, hdcLine);
 		Float hhadLine = Util.parseLine(elements.get(8).text().trim());
 		Integer corner = Util.parseCorner(elements.get(14).text().trim());
-		RecentForm rf = new RecentForm(type, date, role, agst, result, goal, oppGoal, wdl, hdcLine, hdcRoi, hhadLine,
+		History rf = new History(type, date, role, agst, result, goal, oppGoal, wdl, hdcLine, hdcRoi, hhadLine,
 				corner);
 		return rf;
 	}
 	
 	private static String maskRole(String str) {
-		return ("\u5BA2".equals(str)) ? "A" : "H";
+		return ("\u5BA2".equals(str)) ? Param.teamAway : Param.teamHome;
 	}
 
 	public static Document jsoupConnect(String uri) throws IOException {

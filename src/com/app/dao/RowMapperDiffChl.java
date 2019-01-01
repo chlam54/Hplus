@@ -2,22 +2,21 @@ package com.app.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import com.app.model.DiffHdc;
+import com.app.model.DiffChl;
 
-public class RowMapperDiffHdc implements RowMapper {
+public class RowMapperDiffChl implements RowMapper {
 
 	@Override
 	public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-		DiffHdc od = new DiffHdc(rs.getString("id")
-				, rs.getString("bookmaker")
+		DiffChl od = new DiffChl(rs.getString("id")
 				, rs.getTimestamp("oddsTime")
 				, rs.getFloat("line")
-				, rs.getFloat("oddsHome")
-				, rs.getFloat("oddsAway"));
+				, rs.getFloat("oddsHi")
+				, rs.getFloat("oddsLo"));
+		
 		return od;
 	}
 

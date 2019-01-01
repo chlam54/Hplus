@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.app.intf.DiffHilDao;
-import com.app.model.DiffHiLo;
+import com.app.model.DiffHil;
 import com.app.util.Util;
 
 public class DiffHilDaoImpl extends AbstractDaoImpl implements DiffHilDao {
@@ -17,7 +17,7 @@ public class DiffHilDaoImpl extends AbstractDaoImpl implements DiffHilDao {
 	}
 	
 	@Override
-	public void save(DiffHiLo od) {
+	public void save(DiffHil od) {
 		String sql = "INSERT INTO "+table+" (id, bookmaker, oddsTime, "
 				+ "line, oddsHi, oddsLo) VALUES ("
 				+ "?, ?, ?, ?, ?, ?)";
@@ -26,19 +26,19 @@ public class DiffHilDaoImpl extends AbstractDaoImpl implements DiffHilDao {
 				od.getLine(), od.getOddsHi(), od.getOddsLo()});
 	}
 	
-	private List<DiffHiLo> list(String sql, Object[] args){
-		return (List<DiffHiLo>)this.jdbcTemplate.query(sql, args, new RowMapperDiffHiLo());
+	private List<DiffHil> list(String sql, Object[] args){
+		return (List<DiffHil>)this.jdbcTemplate.query(sql, args, new RowMapperDiffHil());
 	}
 	
-	public DiffHiLo getLatest(String id) {
+	public DiffHil getLatest(String id) {
 		String sql = "SELECT id, bookmaker, oddsTime, "
 				+ "line, oddsHi, oddsLo "
 				+ "FROM "+table+" where id = ? "
 				+ "AND oddsTime = (SELECT max(oddsTime) FROM "+table+" where id = ? group by id);";
-		DiffHiLo result = null;
+		DiffHil result = null;
 		try {
-			result = (DiffHiLo)this.jdbcTemplate.queryForObject(sql, new Object[] {id, id}, 
-				new RowMapperDiffHiLo());
+			result = (DiffHil)this.jdbcTemplate.queryForObject(sql, new Object[] {id, id}, 
+				new RowMapperDiffHil());
 		} catch(Exception e) {
 			logger.info("Fail to get Latest::"+id);
 		}

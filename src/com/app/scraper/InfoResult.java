@@ -1,31 +1,57 @@
 package com.app.scraper;
 
 public class InfoResult {
-	public InfoResult(Integer homeGoal, Integer awayGoal, Integer corner, String result) {
+	private Integer halfTimeHomeGoal, halfTimeAwayGoal,
+		fullTimeHomeGoal, fullTimeAwayGoal, corner;
+
+	public InfoResult(Integer halfTimeHomeGoal, Integer halfTimeAwayGoal, Integer fullTimeHomeGoal,
+			Integer fullTimeAwayGoal, Integer corner) {
 		super();
-		this.homeGoal = homeGoal;
-		this.awayGoal = awayGoal;
+		this.halfTimeHomeGoal = halfTimeHomeGoal;
+		this.halfTimeAwayGoal = halfTimeAwayGoal;
+		this.fullTimeHomeGoal = fullTimeHomeGoal;
+		this.fullTimeAwayGoal = fullTimeAwayGoal;
 		this.corner = corner;
-		this.result = result;
 	}
-	public Integer getHomeGoal() {
-		return homeGoal;
+
+	public Integer getHalfTimeHomeGoal() {
+		return halfTimeHomeGoal;
 	}
-	public Integer getAwayGoal() {
-		return awayGoal;
+
+	public void setHalfTimeHomeGoal(Integer halfTimeHomeGoal) {
+		this.halfTimeHomeGoal = halfTimeHomeGoal;
 	}
+
+	public Integer getHalfTimeAwayGoal() {
+		return halfTimeAwayGoal;
+	}
+
+	public void setHalfTimeAwayGoal(Integer halfTimeAwayGoal) {
+		this.halfTimeAwayGoal = halfTimeAwayGoal;
+	}
+
+	public Integer getFullTimeHomeGoal() {
+		return fullTimeHomeGoal;
+	}
+
+	public void setFullTimeHomeGoal(Integer fullTimeHomeGoal) {
+		this.fullTimeHomeGoal = fullTimeHomeGoal;
+	}
+
+	public Integer getFullTimeAwayGoal() {
+		return fullTimeAwayGoal;
+	}
+
+	public void setFullTimeAwayGoal(Integer fullTimeAwayGoal) {
+		this.fullTimeAwayGoal = fullTimeAwayGoal;
+	}
+
 	public Integer getCorner() {
 		return corner;
 	}
-	public String getResult() {
-		return result;
+
+	public void setCorner(Integer corner) {
+		this.corner = corner;
 	}
-	@Override
-	public String toString() {
-		return "InfoResult [homeGoal=" + homeGoal + ", awayGoal=" + awayGoal + ", corner=" + corner + ", result="
-				+ result + "]";
-	}
-	private Integer homeGoal, awayGoal, corner;
-	private String result;
 	
 }

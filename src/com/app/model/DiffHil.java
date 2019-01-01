@@ -4,14 +4,14 @@ import java.sql.Timestamp;
 
 import com.app.util.MathUtil;
 
-public class DiffHiLo {
+public class DiffHil {
 	private String id;
 	private String bookmaker;
 	private Timestamp oddsTime;
 	private Float line, oddsHi, oddsLo;
-	public DiffHiLo() {}
+	public DiffHil() {}
 	
-	public DiffHiLo(String id, String bookmaker, Timestamp oddsTime, Float line, Float oddsHi, Float oddsLo) {
+	public DiffHil(String id, String bookmaker, Timestamp oddsTime, Float line, Float oddsHi, Float oddsLo) {
 		super();
 		this.id = id;
 		this.bookmaker = bookmaker;
@@ -70,7 +70,7 @@ public class DiffHiLo {
 
 	@Override
 	public boolean equals(Object obj) {
-		DiffHiLo od = (DiffHiLo)obj;
+		DiffHil od = (DiffHil)obj;
 		
 		boolean isSame = od.getId().equals(this.id) &&
 				od.getBookmaker().equals(this.bookmaker) &&
